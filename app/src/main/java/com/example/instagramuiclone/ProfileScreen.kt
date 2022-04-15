@@ -1,6 +1,9 @@
 package com.example.instagramuiclone
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -8,7 +11,9 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,6 +29,8 @@ fun ProfileScreen(){
     ){
         // Top bar section
         TopBarSection(name = "iamifeanyichukwu")
+        // profile section
+        ProfileSection()
     }
 }
 
@@ -72,6 +79,46 @@ fun TopBarSection(
             modifier = Modifier.size(20.dp)
         )
     }
+}
+
+// Profile section
+@Composable
+fun ProfileSection(
+    modifier: Modifier = Modifier
+){
+    Column(modifier = modifier.fillMaxWidth()) {
+        /* Row that houses the profile image and the followers, following
+            and total number of posts
+         */
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RoundImage(image = painterResource(id = R.drawable.ifeanyi), modifier = Modifier
+                .size(100.dp)
+                .weight(3f))
+        } // profile image section ends
+    }
+}
+
+
+// circular image
+@Composable
+fun RoundImage(
+    image: Painter,
+    modifier: Modifier = Modifier
+){
+    Image(
+        painter = image,
+        contentDescription = null,
+        modifier = modifier
+            .aspectRatio(1f, matchHeightConstraintsFirst = true)
+            .border(1.dp, color = Color.LightGray, shape = CircleShape)
+            .padding(3.dp)
+            .clip(CircleShape)
+    )
 }
 
 
