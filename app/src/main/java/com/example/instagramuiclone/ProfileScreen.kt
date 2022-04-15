@@ -98,9 +98,12 @@ fun ProfileSection(
         ) {
             RoundImage(image = painterResource(id = R.drawable.ifeanyi), modifier = Modifier
                 .size(100.dp)
-                .weight(3f))
-        } // profile image section ends
-    }
+                .weight(3f)) // image
+
+            Spacer(modifier = Modifier.width(16.dp))
+            StatSection(modifier = Modifier.weight(7f))
+        } // row end
+    } // column end
 }
 
 
@@ -119,6 +122,47 @@ fun RoundImage(
             .padding(3.dp)
             .clip(CircleShape)
     )
+}
+
+
+// stat section
+@Composable
+fun StatSection(
+    modifier: Modifier = Modifier
+){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = modifier
+    ) {
+        ProfileStats(numberText = "601", text = "Posts")
+        ProfileStats(numberText = "10M", text = "Followers")
+        ProfileStats(numberText = "1", text = "Following")
+    }
+}
+
+
+
+// profile stat
+@Composable
+fun ProfileStats(
+    numberText: String,
+    text: String,
+    modifier: Modifier = Modifier
+){
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
+        Text(
+            text = numberText,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = text, )
+    }
 }
 
 
