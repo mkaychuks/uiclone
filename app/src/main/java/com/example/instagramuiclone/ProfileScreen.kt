@@ -15,6 +15,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -103,6 +105,16 @@ fun ProfileSection(
             Spacer(modifier = Modifier.width(16.dp))
             StatSection(modifier = Modifier.weight(7f))
         } // row end
+
+        ProfileDescription(
+            displayName = "Achufusi Ifeanyi",
+            description = "1 coding experience \n" +
+                    "Want me to make your app? send me a DM \n" +
+                    "Check out my github repo for more...",
+            url = "https://github.com/mkaychuks",
+            followedBy = listOf("plcoding", "codinginflow", "wizkid", "SamsonGoddy"),
+            otherCount = 21
+        )
     } // column end
 }
 
@@ -161,9 +173,75 @@ fun ProfileStats(
             fontSize = 20.sp,
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Text(text = text, )
+        Text(text = text)
     }
 }
+
+// profile description
+@Composable
+fun ProfileDescription(
+    displayName: String,
+    description: String,
+    url: String,
+    followedBy: List<String>,
+    otherCount: Int
+){
+    val letterSpacing = 0.5.sp
+    val lineHeight = 20.sp
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+    ) {
+        Text(
+            text = displayName,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = letterSpacing,
+            lineHeight = lineHeight
+        )
+        Text(
+            text = description,
+            letterSpacing = letterSpacing,
+            lineHeight = lineHeight
+        )
+        Text(
+            text = url,
+            color = Color(0xff3d3d91),
+            letterSpacing = letterSpacing,
+            lineHeight = lineHeight
+        )
+
+        if(followedBy.isNotEmpty()){
+            Text(
+                text = buildAnnotatedString {
+                    val boldStyle = SpanStyle(
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
+                    )
+                    append("Followed by ")
+
+                    followedBy.forEachIndexed { index, name ->
+                        pushStyle(boldStyle)
+                        append(name)
+                        pop()
+                        if(index < followedBy.size - 1){
+                            append(", ")
+                        }
+                    }
+                    if (otherCount > 2){
+                        append(" and ")
+                        pushStyle(boldStyle)
+                        append("$otherCount others")
+                    }
+                },
+                letterSpacing = letterSpacing,
+                lineHeight = lineHeight
+            )
+        }
+    }
+}
+
 
 
 
