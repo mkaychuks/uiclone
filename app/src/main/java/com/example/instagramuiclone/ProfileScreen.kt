@@ -3,6 +3,7 @@ package com.example.instagramuiclone
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,8 +40,17 @@ fun ProfileScreen(){
         // profile section
         ProfileSection()
         Spacer(modifier = Modifier.height(25.dp))
-        ButtonSection()
+        ButtonSection(modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(25.dp))
+        HighLightSection(highlights = listOf(
+            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Youtube"),
+            StoryHighLight(image = painterResource(id = R.drawable.ic_bell), "Discord"),
+            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Amazon"),
+            StoryHighLight(image = painterResource(id = R.drawable.ic_bell), "Facebook"),
+            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Twitter"),
+            StoryHighLight(image = painterResource(id = R.drawable.ic_bell), "Netflix"),
+            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Ebay"),
+        ), modifier = Modifier.fillMaxWidth().padding(20.dp))
     }
 }
 
@@ -323,6 +334,30 @@ fun ActionButton(
         }
     }
 }
+
+
+//  highlights section
+@Composable
+fun HighLightSection(
+    modifier: Modifier = Modifier,
+    highlights: List<StoryHighLight>
+){
+    LazyRow(
+        modifier = modifier
+    ){
+        items(highlights.size){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = modifier.padding(end = 15.dp)
+            ) {
+                RoundImage(image = highlights[it].image, modifier = Modifier.size(70.dp))
+                Text(text = highlights[it].text, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
+            }
+        }
+    }
+}
+
 
 
 @Composable
