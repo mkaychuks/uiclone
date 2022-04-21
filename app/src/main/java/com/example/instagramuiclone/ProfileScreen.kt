@@ -1,24 +1,32 @@
 package com.example.instagramuiclone
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -30,10 +38,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // houses the total profile screen ! more of the scaffold
+@ExperimentalFoundationApi
 @Composable
 fun ProfileScreen(){
+    var selectedTabIndex by remember { mutableStateOf(0)}
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ){
         // Top bar section
         TopBarSection(name = "iamifeanyichukwu")
@@ -43,14 +54,39 @@ fun ProfileScreen(){
         ButtonSection(modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(25.dp))
         HighLightSection(highlights = listOf(
-            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Youtube"),
-            StoryHighLight(image = painterResource(id = R.drawable.ic_bell), "Discord"),
-            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Amazon"),
-            StoryHighLight(image = painterResource(id = R.drawable.ic_bell), "Facebook"),
-            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Twitter"),
-            StoryHighLight(image = painterResource(id = R.drawable.ic_bell), "Netflix"),
-            StoryHighLight(image = painterResource(id = R.drawable.ifeanyi), "Ebay"),
-        ), modifier = Modifier.fillMaxWidth().padding(20.dp))
+            ImageWithText(image = painterResource(id = R.drawable.ifeanyi), "Youtube"),
+            ImageWithText(image = painterResource(id = R.drawable.ic_bell), "Discord"),
+            ImageWithText(image = painterResource(id = R.drawable.ifeanyi), "Amazon"),
+            ImageWithText(image = painterResource(id = R.drawable.ic_bell), "Facebook"),
+            ImageWithText(image = painterResource(id = R.drawable.ifeanyi), "Twitter"),
+            ImageWithText(image = painterResource(id = R.drawable.ic_bell), "Netflix"),
+            ImageWithText(image = painterResource(id = R.drawable.ifeanyi), "Ebay"),
+        ), modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp))
+        Spacer(modifier = Modifier.height(10.dp))
+        PostTabView(
+            imageWithTexts = listOf(
+                ImageWithText(image = painterResource(id = R.drawable.ic_grid), text = "Posts"),
+                ImageWithText(image = painterResource(id = R.drawable.ic_bell), text = "Reels"),
+                ImageWithText(image = painterResource(id = R.drawable.ic_tv), text = "igtv"),
+                ImageWithText(image = painterResource(id = R.drawable.ic_second), text = "profile")
+            ),
+        ){
+            selectedTabIndex = it
+        }
+        when(selectedTabIndex){
+            0 -> PostSection(
+                posts = listOf(
+                    painterResource(id = R.drawable.ifeanyi),
+                    painterResource(id = R.drawable.ifeanyi),
+                    painterResource(id = R.drawable.ifeanyi),
+                    painterResource(id = R.drawable.ifeanyi),
+                    painterResource(id = R.drawable.ifeanyi),
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -340,7 +376,7 @@ fun ActionButton(
 @Composable
 fun HighLightSection(
     modifier: Modifier = Modifier,
-    highlights: List<StoryHighLight>
+    highlights: List<ImageWithText>
 ){
     LazyRow(
         modifier = modifier
@@ -349,7 +385,7 @@ fun HighLightSection(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = modifier.padding(end = 15.dp)
+                modifier = modifier.padding(end = 10.dp)
             ) {
                 RoundImage(image = highlights[it].image, modifier = Modifier.size(70.dp))
                 Text(text = highlights[it].text, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
@@ -358,8 +394,77 @@ fun HighLightSection(
     }
 }
 
+// tab layout in compose
+@Composable
+fun PostTabView(
+    modifier: Modifier = Modifier,
+    imageWithTexts: List<ImageWithText>,
+    onTabSelected: (selectedIndex: Int) -> Unit
+){
+    var selectedTabIndex by remember {
+        mutableStateOf(0)
+    }
+    val inactiveColor = Color(0xff777777)
+    
+    TabRow(
+        selectedTabIndex = selectedTabIndex,
+        backgroundColor = Color.Transparent,
+        contentColor = Color.Black,
+        modifier = modifier
+    ) {
+
+        imageWithTexts.forEachIndexed { index, item ->
+            Tab(
+                selected = selectedTabIndex == index,
+                selectedContentColor = Color.Black,
+                unselectedContentColor = inactiveColor,
+                onClick = {
+                    selectedTabIndex = index
+                    onTabSelected(index)
+                }
+            ) {
+                Icon(
+                    painter = item.image,
+                    contentDescription = item.text,
+                    tint = if (selectedTabIndex == index) Color.Black else inactiveColor,
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .size(20.dp)
+                )
+            }
+        }
+    }
+}
 
 
+// post section
+@ExperimentalFoundationApi
+@Composable
+fun PostSection(
+    posts: List<Painter>,
+    modifier: Modifier = Modifier
+){
+    LazyVerticalGrid(
+        cells = GridCells.Fixed(3),
+        modifier = modifier.scale(1.01f)
+    ){
+        items(posts.size){
+            Image(
+                painter = posts[it],
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .border(
+                        1.dp,
+                        color = Color.White
+                    )
+            )
+        }
+    }
+}
+
+@ExperimentalFoundationApi
 @Composable
 @Preview(showBackground = true)
 fun SecondPreview(){
